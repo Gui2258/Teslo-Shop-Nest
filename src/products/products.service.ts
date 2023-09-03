@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException }
   from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Product } from './entities/product.entity';
@@ -50,11 +50,15 @@ export class ProductsService {
     let product : Product;
     if(IsUUID(term))
       product =  await this.productRepository.findOneBy({id:term});
-    else
-      product =  await this.productRepository.findOneBy({slug:term});
-  
+    else{
+      const queryBuilder = this.productRepository.createQueryBuilder();
+      product = await queryBuilder
+        .where('UPPER(title) =:title or slug =:slug',{
+          title : term.toUpperCase(),
+          slug : term.toLowerCase(),
+        }).getOne(); 
 
-   
+    }
 
     if(!product)
       throw new NotFoundException(`The product with paramteter = ${term} not found`)
