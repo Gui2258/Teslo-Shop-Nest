@@ -70,7 +70,7 @@ export class ProductsService {
     
     const product = await this.productRepository.preload({
       id : id,
-      ...UpdateProductDto
+      ...updateProductDto
     })
 
     if(!product)
