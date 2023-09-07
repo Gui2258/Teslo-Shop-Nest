@@ -36,7 +36,7 @@ export class ProductsService {
         images : images.map(image => this.productImageRepository.create({url:image}))
       });
       await this.productRepository.save(product);
-      return product;
+      return {...product, images : images};
 
     } catch (error) {
       this.handleDBExeption(error);    
@@ -47,11 +47,18 @@ export class ProductsService {
 
     const {limit = 10, offset = 0} = paginationDto;
    
-    return await this.productRepository.find({
+    const product =  await this.productRepository.find({
       take: limit,
       skip: offset,
-      //TODO relaciones
+      relations:{
+        images:true
+      }
     })
+
+    return product.map(product => ({
+      ...product,
+      images: product.images.map(img => img.url)
+    }))
   }
 
   async findOne(term: string) {
@@ -65,14 +72,16 @@ export class ProductsService {
         .where('UPPER(title) =:title or slug =:slug',{
           title : term.toUpperCase(),
           slug : term.toLowerCase(),
-        }).getOne(); 
+        })
+        .leftJoinAndSelect('product.images','prodImages')
+        .getOne(); 
 
     }
 
     if(!product)
       throw new NotFoundException(`The product with paramteter = ${term} not found`)
 
-    return product;
+    return (product);
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
@@ -109,4 +118,9 @@ export class ProductsService {
   this.logger.error(error);
   throw new InternalServerErrorException(`Unexpected error, check the server logs`);
   };
+
+  async findOnePlain(term : string){
+    const {images = [], ...rest} = await this.findOne(term);
+    return {...rest, images: images.map(images => images.url)}
+  }
 }
