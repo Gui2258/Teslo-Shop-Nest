@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, InternalServerErrorException, Logger, 
   from '@nestjs/common';
 import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { validate as IsUUID } from "uuid";
 
 import { CreateProductDto } from './dto/create-product.dto';
@@ -22,6 +22,8 @@ export class ProductsService {
     
     @InjectRepository(ProductImage)
     private readonly productImageRepository: Repository<ProductImage>,
+
+    private readonly dataSource : DataSource,
 
   ){}
 
@@ -86,19 +88,34 @@ export class ProductsService {
 
   async update(id: string, updateProductDto: UpdateProductDto) {
     
-    const product = await this.productRepository.preload({
-      id : id,
-      ...updateProductDto,
-      images : []
-    })
+    const {images, ...toUpdate} = updateProductDto;
+
+    const product = await this.productRepository.preload({id, ...toUpdate})
 
     if(!product)
       throw new NotFoundException(`The product with id ${id} not found`)
 
+
+      const queryRuner = this.dataSource.createQueryRunner();
+      await queryRuner.connect();
+      await queryRuner.startTransaction();
+
     try {
-      return this.productRepository.save(product);
+
+      if(images){
+        await queryRuner.manager.delete(ProductImage,{product:{id}})
+        product.images = images.map(image => this.productImageRepository.create({url:image}))
+      }
+
+      await queryRuner.manager.save(product);
+      await queryRuner.commitTransaction();
+      await queryRuner.release();
+      return this.findOnePlain(id);
       
     } catch (error) {
+
+      await queryRuner.rollbackTransaction();
+      await queryRuner.release(); 
       this.handleDBExeption(error);
     }
 
@@ -122,5 +139,19 @@ export class ProductsService {
   async findOnePlain(term : string){
     const {images = [], ...rest} = await this.findOne(term);
     return {...rest, images: images.map(images => images.url)}
+  }
+
+  async deleteAllProducts(){
+    const query = this.productRepository.createQueryBuilder('product');
+
+    try {
+      return query
+        .delete()
+        .where({})
+        .execute();
+      
+    } catch (error) {
+      this.handleDBExeption(error);
+    }
   }
 }
