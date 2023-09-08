@@ -17,3 +17,8 @@ docker-compose up -d
 ```
 yarn start:dev
 ```
+
+6. Poblar la base de datos
+```
+http://localhost:3000/api/seed
+```
