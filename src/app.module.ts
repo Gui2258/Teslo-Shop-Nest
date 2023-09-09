@@ -1,13 +1,16 @@
-import { Module } from '@nestjs/common';
+import { join } from 'path';
+
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { Module } from '@nestjs/common';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ProductsModule } from './products/products.module';
 import { CommonModule } from './common/common.module';
-import { SeedModule } from './seed/seed.module';
 import { FilesModule } from './files/files.module';
+import { AppController } from './app.controller';
+import { SeedModule } from './seed/seed.module';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
@@ -21,6 +24,9 @@ import { FilesModule } from './files/files.module';
       password: process.env.DB_PASSWORD,
       autoLoadEntities:true,
       synchronize:true,  //Sincroniza los cambios a las entidades automaticamente en la db
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname,'..','public')
     }),
     ProductsModule,
     CommonModule,

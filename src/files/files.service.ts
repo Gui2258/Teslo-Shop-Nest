@@ -1,26 +1,18 @@
-import { Injectable } from '@nestjs/common';
-import { CreateFileDto } from './dto/create-file.dto';
-import { UpdateFileDto } from './dto/update-file.dto';
+import { join } from 'path';
+import { existsSync } from 'fs';
+
+import { BadRequestException, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class FilesService {
-  create(createFileDto: CreateFileDto) {
-    return 'This action adds a new file';
-  }
 
-  findAll() {
-    return `This action returns all files`;
-  }
+  getStaticProductImage(imagename : string){
 
-  findOne(id: number) {
-    return `This action returns a #${id} file`;
-  }
+    const path = join(__dirname,'../../static/products', imagename);
 
-  update(id: number, updateFileDto: UpdateFileDto) {
-    return `This action updates a #${id} file`;
-  }
+    if(!existsSync(path))
+      throw new BadRequestException(`No product found with image ${imagename}`);
 
-  remove(id: number) {
-    return `This action removes a #${id} file`;
+    return path;
   }
 }
