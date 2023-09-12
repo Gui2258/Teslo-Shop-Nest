@@ -11,6 +11,7 @@ import { FilesModule } from './files/files.module';
 import { AppController } from './app.controller';
 import { SeedModule } from './seed/seed.module';
 import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { AppService } from './app.service';
     CommonModule,
     SeedModule,
     FilesModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
