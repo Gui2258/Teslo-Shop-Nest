@@ -1,10 +1,8 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="nest.svg" width="200" alt="Nest Logo" /></a>
+<p align="">
+  <a href="http://nestjs.com/" target="blank"><img src="nest.svg" width="100" alt="Nest Logo" 
+  href="http://nestjs.com/" target="blank"><img src="typescript.svg" width="100" alt="ts Logo"/></a>
   
   
-
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="typescript.svg" width="200" alt="ts Logo" /></a>
 
 # Teslo API
 
