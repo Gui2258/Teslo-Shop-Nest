@@ -6,7 +6,7 @@ import { Auth } from 'src/auth/decorators';
 import { ValidRoles } from 'src/auth/interfaces/valid-roles';
 
 @ApiTags("Seed")
-@Auth(ValidRoles.admin)
+//@Auth(ValidRoles.admin)
 @Controller('seed')
 export class SeedController {
   constructor(private readonly seedService: SeedService) {}
