@@ -1,9 +1,17 @@
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="nest.svg" width="200" alt="Nest Logo" /></a>
+  
+  
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="typescript.svg" width="200" alt="ts Logo" /></a>
 
 # Teslo API
+
+## Proyecto Académico
+Proyecto con fines educativos usando el framework nest+typescript para crear el backend de un almacén de una tineda. Contiene una api funcional y documentada. Se emplea un contenedor con la base de datos Postgres, a la cual se accede mediante el ORM TypeOrm. Tambien se usan JWT(JSON Web Tokens) para la autenticacion y autorizacion de algunos endpoints. Se usan WebSockets. En desarrollo...
+
+# Para ejecutar el proyecto
 
 1. Clonar el proyecto
 
@@ -23,4 +31,9 @@ yarn start:dev
 6. Poblar la base de datos
 ```
 http://localhost:3000/api/seed
+```
+
+7. Documentacion disponible en:
+```
+http://localhost:3000/docs
 ```

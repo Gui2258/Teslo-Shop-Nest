@@ -12,6 +12,7 @@ import { AppController } from './app.controller';
 import { SeedModule } from './seed/seed.module';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { MessagesWsModule } from './message-ws/messages-ws.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { AuthModule } from './auth/auth.module';
     SeedModule,
     FilesModule,
     AuthModule,
+    MessagesWsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query } 
   from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { Auth, GetUser } from 'src/auth/decorators';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
@@ -29,11 +29,15 @@ export class ProductsController {
   }
 
   @Get()
+  @ApiResponse({status:200, description:'Show the produts list',type:[Product]})
+  @ApiResponse({status:400, description:'Bad request'})
+  @ApiResponse({status:403, description:'Forbiden'})
   findAll(@Query() paginationDto : PaginationDto) {
     return this.productsService.findAll(paginationDto);
   }
 
   @Get(':term')
+  @ApiResponse({status:200, description:'Show product that include "term" ',type:Product})
   findOne(@Param('term') term: string) {
     return this.productsService.findOnePlain(term);
   }
